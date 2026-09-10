@@ -1,0 +1,22 @@
+/* Spezielle Formatierung für das PDF-Export-Handling */
+.html2pdf__page-break {
+  page-break-before: always;
+}
+
+/* Versteckt die Löschen-Aktionstaste beim Erstellen des PDFs */
+.generating-pdf .action-col {
+  display: none !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
