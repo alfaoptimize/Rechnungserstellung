@@ -1,10 +1,15 @@
-// Funktion zum Erzeugen der initialen Standarddaten
 function getDefaultData() {
   return {
     sender: '',
     client: '',
     docNumber: 'RE-2026-001',
     taxRate: 19,
+    paymentTerms: 'Zahlbar innerhalb von 14 Tagen ohne Abzug.',
+    accountHolder: '',
+    iban: '',
+    bic: '',
+    taxId: '',
+    contact: '',
     items: [
       { id: '1', desc: 'Google Apps Script Automatisierung', qty: 5, price: 95.00 },
       { id: '2', desc: 'Workflow Beratung & Konzept', qty: 2, price: 120.00 }
@@ -12,7 +17,6 @@ function getDefaultData() {
   };
 }
 
-// Initialer Status (wird bei jedem Seitenaufruf neu erzeugt)
 let invoiceData = getDefaultData();
 
 // DOM Elemente
@@ -20,6 +24,12 @@ const senderInput = document.getElementById('senderInfo');
 const clientInput = document.getElementById('clientInfo');
 const docNumberInput = document.getElementById('docNumber');
 const taxRateInput = document.getElementById('taxRate');
+const paymentTermsInput = document.getElementById('paymentTermsInput');
+const accountHolderInput = document.getElementById('accountHolderInput');
+const ibanInput = document.getElementById('ibanInput');
+const bicInput = document.getElementById('bicInput');
+const taxIdInput = document.getElementById('taxIdInput');
+const contactInput = document.getElementById('contactInput');
 const addItemForm = document.getElementById('addItemForm');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,24 +43,27 @@ function initFormValues() {
   clientInput.value = invoiceData.client;
   docNumberInput.value = invoiceData.docNumber;
   taxRateInput.value = invoiceData.taxRate;
+  paymentTermsInput.value = invoiceData.paymentTerms;
+  accountHolderInput.value = invoiceData.accountHolder;
+  ibanInput.value = invoiceData.iban;
+  bicInput.value = invoiceData.bic;
+  taxIdInput.value = invoiceData.taxId;
+  contactInput.value = invoiceData.contact;
 
-  // Datum als dd.MM.yyyy formatieren
+  // Datum im Format dd.MM.yyyy
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year = now.getFullYear();
   document.getElementById('previewDate').textContent = `${day}.${month}.${year}`;
 
-  // Vorschau-Standardtexte festlegen
-  document.getElementById('previewSender').textContent = invoiceData.sender || 'Absender GmbH';
-  document.getElementById('previewClient').textContent = invoiceData.client || 'Empfänger GmbH';
+  updateFooter();
 }
 
 function setupEventListeners() {
   senderInput.addEventListener('input', (e) => {
-    const val = e.target.value.trim();
     invoiceData.sender = e.target.value;
-    document.getElementById('previewSender').textContent = val !== '' ? e.target.value : 'Absender GmbH';
+    updateSenderAndAddress(e.target.value);
   });
 
   clientInput.addEventListener('input', (e) => {
@@ -70,6 +83,42 @@ function setupEventListeners() {
     renderInvoice();
   });
 
+  paymentTermsInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    invoiceData.paymentTerms = e.target.value;
+    document.getElementById('previewPaymentTerms').textContent = val !== '' ? e.target.value : 'Zahlbar innerhalb von 14 Tagen ohne Abzug.';
+  });
+
+  accountHolderInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    invoiceData.accountHolder = e.target.value;
+    document.getElementById('footerAccountHolder').textContent = val !== '' ? e.target.value : 'Absender GmbH / Vorname Nachname';
+  });
+
+  ibanInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    invoiceData.iban = e.target.value;
+    document.getElementById('footerIban').textContent = val !== '' ? e.target.value : 'DE12 1234 5678 1234 5678 90';
+  });
+
+  bicInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    invoiceData.bic = e.target.value;
+    document.getElementById('footerBic').textContent = val !== '' ? e.target.value : 'BANKDEFFXXX';
+  });
+
+  taxIdInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    invoiceData.taxId = e.target.value;
+    document.getElementById('footerTaxId').textContent = val !== '' ? e.target.value : 'DE123456789';
+  });
+
+  contactInput.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    invoiceData.contact = e.target.value;
+    document.getElementById('footerContact').textContent = val !== '' ? e.target.value : 'info@absender.de';
+  });
+
   addItemForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const desc = document.getElementById('itemDesc').value.trim();
@@ -78,18 +127,41 @@ function setupEventListeners() {
 
     if (!desc || isNaN(qty) || isNaN(price)) return;
 
-    invoiceData.items.push({
-      id: Date.now().toString(),
-      desc,
-      qty,
-      price
-    });
-
+    invoiceData.items.push({ id: Date.now().toString(), desc, qty, price });
     document.getElementById('itemDesc').value = '';
     renderInvoice();
   });
 
   document.getElementById('downloadPdfBtn').addEventListener('click', generatePdf);
+}
+
+// Spiegelt den Absender-Input in Vorschau-Kopfzeile und Fußzeile
+function updateSenderAndAddress(inputVal) {
+  const val = inputVal.trim();
+  const previewSenderEl = document.getElementById('previewSender');
+  const footerCompanyEl = document.getElementById('footerCompany');
+  const footerAddressEl = document.getElementById('footerAddress');
+
+  if (val === '') {
+    previewSenderEl.textContent = 'Absender GmbH';
+    footerCompanyEl.textContent = 'Absender GmbH';
+    footerAddressEl.textContent = 'Musterstraße 1\n12345 Musterstadt';
+    return;
+  }
+
+  previewSenderEl.textContent = val;
+
+  // Aufteilen nach Kommas oder Zeilenumbrüchen
+  const parts = val.split(/,|\n/).map(p => p.trim()).filter(p => p.length > 0);
+
+  if (parts.length > 0) {
+    footerCompanyEl.textContent = parts[0]; // Erster Teil = Firmenname / Name
+  }
+  if (parts.length > 1) {
+    footerAddressEl.textContent = parts.slice(1).join('\n'); // Restliche Teile = Adresse
+  } else {
+    footerAddressEl.textContent = '';
+  }
 }
 
 function renderInvoice() {
@@ -125,6 +197,15 @@ function renderInvoice() {
   document.getElementById('grandTotal').textContent = formatCurrency(grandTotal);
 }
 
+function updateFooter() {
+  updateSenderAndAddress(invoiceData.sender);
+  document.getElementById('footerContact').textContent = invoiceData.contact || 'info@absender.de';
+  document.getElementById('footerTaxId').textContent = invoiceData.taxId || 'DE123456789';
+  document.getElementById('footerAccountHolder').textContent = invoiceData.accountHolder || 'Absender GmbH / Vorname Nachname';
+  document.getElementById('footerIban').textContent = invoiceData.iban || 'DE12 1234 5678 1234 5678 90';
+  document.getElementById('footerBic').textContent = invoiceData.bic || 'BANKDEFFXXX';
+}
+
 function removeItem(id) {
   invoiceData.items = invoiceData.items.filter(item => item.id !== id);
   renderInvoice();
@@ -132,15 +213,14 @@ function removeItem(id) {
 
 function generatePdf() {
   const element = document.getElementById('invoicePreview');
-  
   element.classList.add('generating-pdf');
 
   const opt = {
-    margin:       10,
-    filename:     `${invoiceData.docNumber || 'Rechnung'}.pdf`,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    margin: 8,
+    filename: `${invoiceData.docNumber || 'Rechnung'}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
   html2pdf().set(opt).from(element).save().then(() => {
