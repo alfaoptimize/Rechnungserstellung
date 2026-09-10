@@ -24,50 +24,79 @@
 
   <main class="flex-1 p-6 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8">
     
-    <!-- Linke Spalte: Eingabe-Formular (Wird im PDF ausgeblendet) -->
+    <!-- Linke Spalte: Formular -->
     <section class="lg:col-span-5 space-y-6">
       
-      <!-- Absender & Empfänger -->
-      <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow">
-        <h2 class="text-lg font-bold mb-4 text-blue-400">Stammdaten</h2>
-        <div class="space-y-3">
+      <!-- Stammdaten -->
+      <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow space-y-3">
+        <h2 class="text-lg font-bold text-blue-400">Stammdaten</h2>
+        <div>
+          <label class="text-xs text-slate-400">Absender (Name & Adresse)</label>
+          <input type="text" id="senderInfo" placeholder="Absender GmbH, Absenderstr. 1, 12345 Stadt" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">Empfänger</label>
+          <input type="text" id="clientInfo" placeholder="Empfänger GmbH, Empfängerstr. 1, 12345 Stadt" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="text-xs text-slate-400">Absender</label>
-            <input type="text" id="senderInfo" placeholder="Absender GmbH, Absenderstr. 1, 12345 Stadt, Land" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
+            <label class="text-xs text-slate-400">Dokument-Nr.</label>
+            <input type="text" id="docNumber" value="RE-2026-001" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
           </div>
           <div>
-            <label class="text-xs text-slate-400">Empfänger</label>
-            <input type="text" id="clientInfo" placeholder="Empfänger GmbH, Empfängerstr. 1, 12345 Stadt, Land" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
+            <label class="text-xs text-slate-400">MwSt. (%)</label>
+            <input type="number" id="taxRate" value="19" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
           </div>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="text-xs text-slate-400">Dokument-Nr.</label>
-              <input type="text" id="docNumber" value="RE-2026-001" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
-            </div>
-            <div>
-              <label class="text-xs text-slate-400">MwSt. (%)</label>
-              <input type="number" id="taxRate" value="19" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
-            </div>
-          </div>
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">Zahlungsziel</label>
+          <input type="text" id="paymentTermsInput" value="Zahlbar innerhalb von 14 Tagen ohne Abzug." class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
         </div>
       </div>
 
-      <!-- Neue Position hinzufügen -->
+      <!-- Fußzeilen-Daten (Bank & Steuer) -->
+      <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow space-y-3">
+        <h2 class="text-lg font-bold text-blue-400">Zahlungs- & Fußzeilendaten</h2>
+        <div>
+          <label class="text-xs text-slate-400">Kontoinhaber</label>
+          <input type="text" id="accountHolderInput" placeholder="Absender GmbH oder Vorname Nachname" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">IBAN</label>
+          <input type="text" id="ibanInput" placeholder="DE12 1234 5678 1234 5678 90" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="text-xs text-slate-400">BIC</label>
+            <input type="text" id="bicInput" placeholder="BANKDEFFXXX" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400">USt-IdNr. / St.-Nr.</label>
+            <input type="text" id="taxIdInput" placeholder="DE123456789" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+          </div>
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">E-Mail / Kontakt</label>
+          <input type="text" id="contactInput" placeholder="info@absender.de" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
+        </div>
+      </div>
+
+      <!-- Position hinzufügen -->
       <div class="bg-slate-800 p-5 rounded-lg border border-slate-700 shadow">
         <h2 class="text-lg font-bold mb-4 text-blue-400">Position hinzufügen</h2>
         <form id="addItemForm" class="space-y-3">
           <div>
             <label class="text-xs text-slate-400">Beschreibung</label>
-            <input type="text" id="itemDesc" placeholder="z. B. Prozessautomatisierung mit Apps Script" required class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
+            <input type="text" id="itemDesc" placeholder="z. B. Prozessautomatisierung" required class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
-              <label class="text-xs text-slate-400">Stunden / Menge</label>
-              <input type="number" id="itemQty" value="1" min="0.1" step="0.1" required class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
+              <label class="text-xs text-slate-400">Menge</label>
+              <input type="number" id="itemQty" value="1" min="0.1" step="0.1" required class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
             </div>
             <div>
               <label class="text-xs text-slate-400">Einzelpreis (€)</label>
-              <input type="number" id="itemPrice" value="95" min="0" step="0.01" required class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm text-slate-100 mt-1">
+              <input type="number" id="itemPrice" value="95" min="0" step="0.01" required class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm mt-1">
             </div>
           </div>
           <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 rounded transition mt-2">
@@ -78,13 +107,12 @@
 
     </section>
 
-    <!-- Rechte Spalte: Live PDF Vorschau -->
+    <!-- Rechte Spalte: Vorschau -->
     <section class="lg:col-span-7">
       <div class="bg-slate-800 p-4 rounded-lg border border-slate-700 shadow">
         <h2 class="text-sm font-semibold mb-3 text-slate-400">Vorschau (PDF-Bereich)</h2>
         
-        <!-- Das Rechnungsdokument selbst (weißes DIN-A4-Design) -->
-        <div id="invoicePreview" class="bg-white text-slate-900 p-8 rounded shadow-lg min-h-[600px] flex flex-col justify-between text-sm">
+        <div id="invoicePreview" class="bg-white text-slate-900 p-8 rounded shadow-lg min-h-[750px] flex flex-col justify-between text-sm">
           <div>
             <!-- Kopfzeile -->
             <div class="flex justify-between items-start border-b pb-6 mb-6">
@@ -108,7 +136,7 @@
               </div>
             </div>
 
-            <!-- Tabellarische Positionen -->
+            <!-- Tabelle -->
             <table class="w-full mb-8 border-collapse">
               <thead>
                 <tr class="border-b border-slate-300 text-left text-xs uppercase text-slate-500">
@@ -120,28 +148,57 @@
                   <th class="py-2 text-right action-col">Aktion</th>
                 </tr>
               </thead>
-              <tbody id="invoiceItemsTable" class="divide-y divide-slate-200">
-                <!-- Dynamisch erzeugt -->
-              </tbody>
+              <tbody id="invoiceItemsTable" class="divide-y divide-slate-200"></tbody>
             </table>
           </div>
 
-          <!-- Summenblock -->
-          <div class="border-t pt-4 flex justify-end">
-            <div class="w-64 space-y-2 text-right">
-              <div class="flex justify-between text-slate-600">
-                <span>Nettosumme:</span>
-                <span id="subTotal">0,00 €</span>
+          <!-- Unterer Bereich: Zahlungsziel + Summen + Fußzeile -->
+          <div class="space-y-6">
+            
+            <div class="flex justify-between items-end border-t pt-4">
+              <!-- Zahlungsziel -->
+              <div class="text-xs text-slate-600 max-w-[280px]">
+                <p class="font-bold text-slate-800 mb-1">Zahlungsbedingungen:</p>
+                <p id="previewPaymentTerms">Zahlbar innerhalb von 14 Tagen ohne Abzug.</p>
               </div>
-              <div class="flex justify-between text-slate-600">
-                <span>MwSt. (<span id="previewTaxRate">19</span>%):</span>
-                <span id="taxTotal">0,00 €</span>
-              </div>
-              <div class="flex justify-between font-bold text-slate-900 text-base border-t pt-2">
-                <span>Bruttosumme:</span>
-                <span id="grandTotal">0,00 €</span>
+
+              <!-- Summenblock -->
+              <div class="w-64 space-y-2 text-right">
+                <div class="flex justify-between text-slate-600">
+                  <span>Zwischensumme:</span>
+                  <span id="subTotal">0,00 €</span>
+                </div>
+                <div class="flex justify-between text-slate-600">
+                  <span>MwSt. (<span id="previewTaxRate">19</span>%):</span>
+                  <span id="taxTotal">0,00 €</span>
+                </div>
+                <div class="flex justify-between font-bold text-slate-900 text-base border-t pt-2">
+                  <span>Gesamtbetrag:</span>
+                  <span id="grandTotal">0,00 €</span>
+                </div>
               </div>
             </div>
+
+            <!-- 3-Spalten-Fußzeile mit gespiegelter Adresse -->
+            <footer class="border-t border-slate-300 pt-4 text-[10px] text-slate-500 grid grid-cols-3 gap-4">
+              <div>
+                <p class="font-bold text-slate-700 mb-0.5">Unternehmen</p>
+                <p id="footerCompany" class="font-semibold text-slate-800">Absender GmbH</p>
+                <p id="footerAddress" class="whitespace-pre-line">Musterstraße 1&#10;12345 Musterstadt</p>
+                <p id="footerContact" class="mt-1">info@absender.de</p>
+              </div>
+              <div>
+                <p class="font-bold text-slate-700 mb-0.5">Steuerdaten</p>
+                <p>USt-IdNr. / St.-Nr.: <br><span id="footerTaxId">DE123456789</span></p>
+              </div>
+              <div>
+                <p class="font-bold text-slate-700 mb-0.5">Bankverbindung</p>
+                <p>Kontoinhaber: <span id="footerAccountHolder">Absender GmbH oder Vorname Nachname</span></p>
+                <p>IBAN: <span id="footerIban">DE12 1234 5678 1234 5678 90</span></p>
+                <p>BIC: <span id="footerBic">BANKDEFFXXX</span></p>
+              </div>
+            </footer>
+
           </div>
 
         </div>
